@@ -67,11 +67,11 @@ class Market:
     # Simple Moving Average of parsed market data
     def sma(self, n):
         assert n*24+datetime.now().hour <= len(self.history), "N cannot be greater than the length of data collected. (30 * 24 + Current Hour of Day)"
-        
+
         n = n*24+datetime.now().hour
-        min = len(self.history)-n-1
+        end = len(self.history)-n-1
         sum = 0
-        for i in range(len(self.history)-1, min, -1):
+        for i in range(len(self.history)-1, end, -1):
             sum += float(self.history[i][1])
         return float(sum/n)
 
