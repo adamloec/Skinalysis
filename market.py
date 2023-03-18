@@ -9,9 +9,12 @@ from datetime import datetime, timedelta
 # Parameters:
 # url = Url to steam market place item.
 # range = Number of days prior to current date to gather data on.
+#
+# Notes:
+# Moving average should be less than 30 days for the most up to date market information.
 class Market:
     def __init__(self, url, range):
-        assert range < 30, "Range should be less than 30."
+        assert range <= 30, "Range should be less than 30 for analysis to be accurate."
 
         self.url = url
         self.range = range
