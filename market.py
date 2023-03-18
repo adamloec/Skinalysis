@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 # range = Number of days prior to current date to gather data on.
 #
 # Notes:
-# Moving average should be less than 30 days for the most up to date market information.
+# Moving average should be less than 21 days for the most up to date market information.
 class Market:
     def __init__(self, url, range=21):
         self.url = url
@@ -54,7 +54,7 @@ class Market:
         start_month = start_date.strftime("%b")
         start_day = start_date.day
 
-        # Parses all data within the past 30 days
+        # Parses all data within the past 21 days
         for i in range(0, len(all_history)):
             if month in all_history[i][0]:
                 self.history.append(all_history[i])
@@ -66,7 +66,7 @@ class Market:
     
     # Simple Moving Average of parsed market data
     def sma(self, n):
-        assert n*24+datetime.now().hour <= len(self.history), "N cannot be greater than the length of data collected. (30 * 24 + Current Hour of Day)"
+        assert n*24+datetime.now().hour <= len(self.history), "N cannot be greater than the length of data collected. (21 * 24 + Current Hour of Day)"
 
         n = n*24+datetime.now().hour
         end = len(self.history)-n-1
