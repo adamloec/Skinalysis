@@ -1,2 +1,2 @@
 # SkinStealer
-Tool to track, and potentially purchase/sell, CSGO market items dependent on generic stock market technicals and indicators.
+Tool to track, and potentially purchase/sell, CSGO market items using generic stock market technicals and indicators.
