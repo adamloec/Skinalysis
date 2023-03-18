@@ -2,12 +2,19 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import json
-
 from datetime import datetime, timedelta
 
+# Market analysis object.
+#
+# Parameters:
+# url = Url to steam market place item.
+# range = Number of days prior to current date to gather data on.
 class Market:
-    def __init__(self, url):
+    def __init__(self, url, range):
+        assert range < 30, "Range should be less than 30."
+
         self.url = url
+        self.range = range
         self.history = []
 
     def scan(self):
@@ -32,18 +39,17 @@ class Market:
             return 1
         
         all_history = json.loads(array_string)
-        self.parse_recent(all_history)
+        self.__parse_recent(all_history)
         return 0
     
-    def parse_recent(self, all_history):
+    def __parse_recent(self, all_history):
         
         # Current date information
         today = datetime.now()
         month = today.strftime("%b")
-        day = today.day
 
         # Start date, 30 days prior to current date
-        start_date = today - timedelta(30)
+        start_date = today - timedelta(self.range)
         start_month = start_date.strftime("%b")
         start_day = start_date.day
 
