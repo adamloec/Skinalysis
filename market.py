@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Market:
     def __init__(self, url):
@@ -37,9 +37,25 @@ class Market:
     
     def parse_recent(self, all_history):
         
-        # All price history in current month
+        # Current date information
         today = datetime.now()
         month = today.strftime("%b")
+        day = today.day
+
+        # Start date, 30 days prior to current date
+        start_date = today - timedelta(30)
+        start_month = start_date.strftime("%b")
+        start_day = start_date.day
+
+        # Parses all data within the past 30 days
         for i in range(0, len(all_history)):
             if month in all_history[i][0]:
-                print(f"{month}: {all_history[i][0]}")
+                self.history.append(all_history[i])
+            
+            if start_month in all_history[i][0]:
+                date_int = int(f"{all_history[i][0][4]}{all_history[i][0][5]}")
+                if start_day <= date_int:
+                    self.history.append(all_history[i])
+
+                
+
