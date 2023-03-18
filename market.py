@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 # Moving average should be less than 30 days for the most up to date market information.
 class Market:
     def __init__(self, url, range):
-        assert range <= 30, "Range should be less than 30 for analysis to be accurate."
+        assert range <= 30, "Range should be less than or equal to 30 days for the most accurate analysis."
 
         self.url = url
         self.range = range
@@ -65,6 +65,12 @@ class Market:
                 date_int = int(f"{all_history[i][0][4]}{all_history[i][0][5]}")
                 if start_day <= date_int:
                     self.history.append(all_history[i])
-
-                
+    
+    # Simple Moving Average of parsed market data
+    def sma(self):
+        n = len(self.history)
+        sum = 0
+        for i in range(0, n):
+            sum += float(self.history[i][1])
+        return float(sum/n)
 
