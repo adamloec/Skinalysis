@@ -49,7 +49,7 @@ class Market:
         today = datetime.now()
         month = today.strftime("%b")
 
-        # Start date, 30 days prior to current date
+        # Start date, 21 days prior to current date
         start_date = today - timedelta(self.range)
         start_month = start_date.strftime("%b")
         start_day = start_date.day
