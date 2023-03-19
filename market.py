@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 # range = Number of days prior to current date to gather data on.
 #
 # Notes:
-# Moving average should be less than 21 days for the most up to date market information.
+# Moving average should be less than or equal to 21 days for the most up to date market information.
 class Market:
     def __init__(self, url, range=21):
         self.url = url

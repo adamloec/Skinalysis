@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
 
 class MMath:
-    # Simple Moving Average of parsed market data
+    # Simple Moving Average.
+    # Parameters:
+    # n = Number of days.
+    # data = 2d array of CSGO market data.
     def sma(self, n, data):
         assert n*24+datetime.now().hour <= len(data), "N cannot be greater than the length of data collected. (21 * 24 + Current Hour of Day)"
 
