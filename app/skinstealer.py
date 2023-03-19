@@ -3,6 +3,7 @@
 
 import sys
 
+from PyQt6 import QtGui
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -21,8 +22,8 @@ from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
 import sqlite3
 
-from market import Market
-from mmath import MMath
+from mutils.market import Market
+from mutils.mmath import MMath
 
 # url = "https://steamcommunity.com/market/listings/730/Revolution%20Case"
 # market = Market(url)
@@ -30,6 +31,10 @@ from mmath import MMath
 # # for i in range(0, len(market.history)):
 # #     print(market.history[i])
 # print(MMath.sma(21, market.history))
+
+import ctypes
+myappid = 'SkinStealer.v1'
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 class SkinStealer(QWidget):
     def __init__(self):
@@ -45,6 +50,7 @@ class SkinStealer(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setWindowIcon(QtGui.QIcon('app/imgs/skinstealer-icon.png'))
 
         # Create vertical layout.
         vbox = QVBoxLayout()
@@ -82,7 +88,7 @@ class SkinStealer(QWidget):
     def displayEntries(self):
         
         # Connect to the database.
-        conn = sqlite3.connect('market.db')
+        conn = sqlite3.connect('app/market.db')
         c = conn.cursor()
 
         # Create the DB table if it does not exist.
