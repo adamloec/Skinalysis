@@ -43,6 +43,17 @@ class Market:
         self.__parse_recent(all_history)
         return 0
     
+    # Simple Moving Average of parsed market data
+    def sma(self, n):
+        assert n*24+datetime.now().hour <= len(self.history), "N cannot be greater than the length of data collected. (21 * 24 + Current Hour of Day)"
+
+        n = n*24+datetime.now().hour
+        end = len(self.history)-n-1
+        sum = 0
+        for i in range(len(self.history)-1, end, -1):
+            sum += float(self.history[i][1])
+        return float(sum/n)
+    
     def __parse_recent(self, all_history):
         
         # Current date information
@@ -63,15 +74,4 @@ class Market:
                 date_int = int(f"{all_history[i][0][4]}{all_history[i][0][5]}")
                 if start_day <= date_int:
                     self.history.append(all_history[i])
-    
-    # Simple Moving Average of parsed market data
-    def sma(self, n):
-        assert n*24+datetime.now().hour <= len(self.history), "N cannot be greater than the length of data collected. (21 * 24 + Current Hour of Day)"
-
-        n = n*24+datetime.now().hour
-        end = len(self.history)-n-1
-        sum = 0
-        for i in range(len(self.history)-1, end, -1):
-            sum += float(self.history[i][1])
-        return float(sum/n)
 
