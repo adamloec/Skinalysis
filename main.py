@@ -1,4 +1,5 @@
 from market import Market
+from mmath import MMath
 
 
 if __name__ == "__main__":
@@ -8,4 +9,4 @@ if __name__ == "__main__":
     market.scan()
     # for i in range(0, len(market.history)):
     #     print(market.history[i])
-    print(market.sma(21))
+    print(MMath.sma(21, market.history))
