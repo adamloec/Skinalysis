@@ -227,7 +227,7 @@ class MarketTable(QTableWidget):
 def main():
 
     app = QApplication(sys.argv)
-    ex = SkinStealer()
+    ex = Skinalysis()
     sys.exit(app.exec())
 
 if __name__ == "__main__":
