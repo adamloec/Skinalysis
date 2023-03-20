@@ -4,6 +4,7 @@
 import sys
 
 from PyQt6 import QtGui
+from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -33,13 +34,13 @@ from mutils.mmath import MMath
 # print(MMath.sma(21, market.history))
 
 import ctypes
-myappid = 'SkinStealer.v1'
+myappid = 'Skinalysis.v1'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-class SkinStealer(QWidget):
+class Skinalysis(QWidget):
     def __init__(self):
         super().__init__()
-        self.title = "Skin Stealer"
+        self.title = "Skinalysis"
         self.left = 100
         self.top = 100
         self.width = 800
@@ -50,7 +51,7 @@ class SkinStealer(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QtGui.QIcon('app/imgs/skinstealer-icon.png'))
+        self.setWindowIcon(QtGui.QIcon('app/imgs/skinalysis-icon.png'))
 
         # Create vertical layout.
         vbox = QVBoxLayout()
@@ -66,13 +67,10 @@ class SkinStealer(QWidget):
 
         # Create URL table widget to display database information.
         self.market_table = MarketTable(self)
-        self.market_table.display()
 
         # Add layouts to vbox (vertical layout).
         vbox.addLayout(hbox1)
         vbox.addWidget(self.market_table)
-
-        # Set main layout for window.
         self.setLayout(vbox)
         
         # Connect the submit button to the addEntry() method.
@@ -80,6 +78,7 @@ class SkinStealer(QWidget):
         
         # Show window.
         self.show()
+        self.market_table.display()
 
     # Add new market URL link to database.
     # NEEDS: pre-check to ensure URL is valid CSGO market item web page.
@@ -112,10 +111,11 @@ class MarketTable(QTableWidget):
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setVisible(False)
         self.verticalHeader().setVisible(False)
+        
 
         # Context menu.
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.showContextMenu)
+        self.customContextMenuRequested.connect(self.contextMenu)
 
         # On-click launches graph view of market data for selected item.
         self.itemClicked.connect(self.graphWindow)
@@ -132,15 +132,20 @@ class MarketTable(QTableWidget):
 
     # Deletes a listing from the table/DB.
     def delete(self):
-        # Index of row to delete.
-        index = int(self.sender().objectName())
+        # Find selected row
+        selection = self.selectionModel().selectedRows()
+        if not selection:
+            return
+        row = selection[0].row()
+        print(row)
 
-        # Corresponding ID from database.
-        self.c.execute('SELECT id FROM market LIMIT 1 OFFSET ?', (index,))
-        item_id = self.c.fetchone()[0]
-
-        # Delete the item from the database.
-        self.c.execute('DELETE FROM market WHERE id = ?', (item_id,))
+        # Delete the selected row, and update the SQL tables row-id's to resync.
+        self.c.execute("DELETE FROM market WHERE rowid=?", (row + 1,))
+        self.c.execute("SELECT rowid, * FROM market")
+        rows = self.c.fetchall()
+        for i, row_data in enumerate(rows, 1):
+            rowid = row_data[0]
+            self.c.execute("UPDATE market SET rowid=? WHERE rowid=?", (i, rowid))
         self.conn.commit()
 
         # Display new table contents.
@@ -175,18 +180,29 @@ class MarketTable(QTableWidget):
 
     # Context Menu for each table listing.
     # Right click on table listing to display context menu.
-    def showContextMenu(self, position):
-        indexes = self.selectedIndexes()
-        if not indexes:
-            return
+    def contextMenu(self, pos):
+        index = self.indexAt(pos)
 
-        row = indexes[0].row()
+        if index.isValid():
+            menu = QMenu()
+            menu.setStyleSheet(open('app/css/table-context.css').read())
 
-        menu = QMenu()
-        delete_action = QtGui.QAction('Delete', self)
-        delete_action.triggered.connect(lambda: self.delete_item(row))
-        menu.addAction(delete_action)
-        menu.exec_(self.viewport().mapToGlobal(position))
+            deleteAction = QAction("Delete", self)
+            deleteAction.triggered.connect(self.delete)
+            menu.addAction(deleteAction)
+
+            menu.addSeparator()
+            renameAction = QAction("Rename", self)
+            menu.addAction(renameAction)
+            menu.addSeparator()
+            cutAction = QAction("Cut", self)
+            menu.addAction(cutAction)
+            copyAction = QAction("Copy", self)
+            menu.addAction(copyAction)
+            pasteAction = QAction("Paste", self)
+            menu.addAction(pasteAction)
+
+            menu.exec(self.viewport().mapToGlobal(pos))
         
     def graphWindow(self, item):
 
