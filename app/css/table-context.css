@@ -1,6 +1,6 @@
 QMenu {
-    background-color: #FFFFFF;
-    border: 1px solid #C2C2C2;
+    background-color: #222222;
+    border: 1px solid #333333;
     padding: 0;
     margin: 0;
     font-size: 14px;
@@ -11,16 +11,30 @@ QMenu::item {
     padding: 8px 24px 8px 24px;
     background-color: transparent;
     border: none;
-    color: #000000;
+    color: #F5F5F5;
+}
+
+QAction[title="true"] {
+    background-color: #252525;
+    color: #cccccc;
+    font-weight: bold;
+    border-bottom: 1px solid #555555;
+}
+
+QAction[title="true"]:hover {
+    background-color: #252525;
+    color: #cccccc;
+    font-weight: bold;
+    border-bottom: 1px solid #555555;
 }
 
 QMenu::item:selected {
-    background-color: #0057D8;
+    background-color: #2d2d2d;
     color: #FFFFFF;
 }
 
 QMenu::separator {
-    background-color: #C2C2C2;
+    background-color: #555555;
     height: 5px;
     margin: 6px 0;
 }

@@ -4,7 +4,7 @@
 import sys
 
 from PyQt6 import QtGui
-from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtGui import QAction, QIcon, QFont
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QApplication,
@@ -52,6 +52,7 @@ class Skinalysis(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setWindowIcon(QtGui.QIcon('app/imgs/skinalysis-icon.png'))
+        self.setStyleSheet(open('app/css/app.css').read())
 
         # Create vertical layout.
         vbox = QVBoxLayout()
@@ -186,21 +187,19 @@ class MarketTable(QTableWidget):
         if index.isValid():
             menu = QMenu()
             menu.setStyleSheet(open('app/css/table-context.css').read())
+            
+            title = QAction("Context Menu Title", self)
+            title.setEnabled(False)
+            title.setProperty("title", "true")
+            menu.addAction(title)
+            menu.addSeparator()
 
             deleteAction = QAction("Delete", self)
             deleteAction.triggered.connect(self.delete)
             menu.addAction(deleteAction)
 
-            menu.addSeparator()
             renameAction = QAction("Rename", self)
             menu.addAction(renameAction)
-            menu.addSeparator()
-            cutAction = QAction("Cut", self)
-            menu.addAction(cutAction)
-            copyAction = QAction("Copy", self)
-            menu.addAction(copyAction)
-            pasteAction = QAction("Paste", self)
-            menu.addAction(pasteAction)
 
             menu.exec(self.viewport().mapToGlobal(pos))
         
